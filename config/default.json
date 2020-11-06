@@ -1,0 +1,10 @@
+{
+  "tittle": "欢迎来到博客首页",
+  "dataBase": {
+    "user": "157913737",
+    "password": "haoxinlong1234",
+    "host": "localhost",
+    "port": "27017",
+    "collection": "alibaixiu"
+  }
+}
