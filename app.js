@@ -12,7 +12,7 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//设置静态文件夹
+//设置静态文件夹123123
 app.use(express.static(path.join(__dirname, 'public')));
 require('./server/connect');
 
