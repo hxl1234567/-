@@ -41,9 +41,9 @@ let user = new mongoose.Schema({
         type: String
     },
     password: {
+        required: true,
         type: String,
-        minlength: 6,
-        maxlength: 15
+        minlength: 6
     }
 })
 let Users = mongoose.model('user', user);
