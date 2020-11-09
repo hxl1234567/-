@@ -17,7 +17,8 @@ $('#form').on('submit', function () {
 
     return false;
 })
-$('#file').on('change', function () {
+//把文件提交到服务器
+$('#modify').on('change', '#file', function () {
     //当我们得到这个文件的时候,把这个东西
     let file = this.files[0];
     let formData = new FormData();
@@ -71,3 +72,50 @@ $('#tbody').on('click', '.edit', function () {
         }
     })
 })
+//下来就是修改用户信息的功能
+$('#modify').on('submit', '#modifyForm', function () {
+    let form = $(this).serialize();
+    let id = $(this).data('id');
+    $.ajax({
+        type: 'put',
+        url: '/admin/users/' + id,
+        data: form,
+        success: function (data) {
+            location.reload();
+        }
+    })
+    return false;
+})
+//删除用户的操作
+$('#tbody').on('click', ('.delete'), function () {
+    if (confirm('你确认要删除这个用户吗')) {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'delete',
+            url: '/admin/users/' + id,
+            success: function () {
+                location.reload();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    }
+})
+
+//当我们点击删除多个按钮的时候
+$('#deleteMany').on('click', function () {
+    //用于存储用户id的数组
+    let arr = [];
+    $('#tbody').find('input:checked').each(function (index, val) {
+        arr.push($(val).data('id'));
+    })
+    $.ajax({
+        type: 'delete',
+        url: '/admin/users/' + arr.join('-'),
+        success: function () {
+            location.reload();
+        }
+    })
+})
+
