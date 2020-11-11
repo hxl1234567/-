@@ -35,9 +35,9 @@
             <h3 class="panel-title">站点内容统计：</h3>
           </div>
           <ul class="list-group">
-            <li class="list-group-item"><strong>10</strong>篇文章（<strong>2</strong>篇草稿）</li>
-            <li class="list-group-item"><strong>6</strong>个分类</li>
-            <li class="list-group-item"><strong>5</strong>条评论（<strong>1</strong>条待审核）</li>
+            <li class="list-group-item" id="post"></li>
+            <li class="list-group-item" id="category"></li>
+            <li class="list-group-item" id="comment"></li>
           </ul>
         </div>
       </div>
@@ -88,5 +88,38 @@
 <script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
 <script>NProgress.done()</script>
 <script src="/js/logout.js"></script>
+<script>
+  //获取文章
+  $.ajax({
+    type: 'get',
+    url: '/admin/posts/count',
+    success: function (data) {
+      $('#post').html(' <strong>' + data.postNum + '</strong>篇文章（<strong>' + data.draftNum + '</strong>篇草稿）')
+    }
+  })
+  /*  //获取文章
+    $.ajax({
+      type:'get',
+      url:'/admin/posts/count',
+      success:function (data) {
+        $('#category').html(' <strong>'+data.postNum+'</strong>篇文章（<strong>'+data.draftNum+'</strong>篇草稿）')
+      }
+    })*/
+  $.ajax({
+    type: 'get',
+    url: '/admin/categories/count',
+    success: function (data) {
+      $('#category').html(' <strong>' + data.category + '</strong>个分类')
+    }
+  })
+  //获取评论
+  $.ajax({
+    type: 'get',
+    url: '/admin/comments/count',
+    success: function (data) {
+      $('#comment').html('<strong>' + data.commentNum + '</strong>条评论（<strong>' + data.commentshenhe + '</strong>条待审核）')
+    }
+  })
+</script>
 </body>
 </html>
