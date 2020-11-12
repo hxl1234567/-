@@ -49,8 +49,8 @@
 
 <div class="aside">
   <div class="profile">
-    <img class="avatar" src="/uploads/avatar.jpg">
-    <h3 class="name">Coder</h3>
+    <img class="avatar" src="">
+    <h3 class="name"></h3>
   </div>
   <ul class="nav">
     <li class="active">
@@ -87,39 +87,7 @@
 <script src="/assets/vendors/jquery/jquery.js"></script>
 <script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
 <script>NProgress.done()</script>
-<script src="/js/logout.js"></script>
-<script>
-  //获取文章
-  $.ajax({
-    type: 'get',
-    url: '/admin/posts/count',
-    success: function (data) {
-      $('#post').html(' <strong>' + data.postNum + '</strong>篇文章（<strong>' + data.draftNum + '</strong>篇草稿）')
-    }
-  })
-  /*  //获取文章
-    $.ajax({
-      type:'get',
-      url:'/admin/posts/count',
-      success:function (data) {
-        $('#category').html(' <strong>'+data.postNum+'</strong>篇文章（<strong>'+data.draftNum+'</strong>篇草稿）')
-      }
-    })*/
-  $.ajax({
-    type: 'get',
-    url: '/admin/categories/count',
-    success: function (data) {
-      $('#category').html(' <strong>' + data.category + '</strong>个分类')
-    }
-  })
-  //获取评论
-  $.ajax({
-    type: 'get',
-    url: '/admin/comments/count',
-    success: function (data) {
-      $('#comment').html('<strong>' + data.commentNum + '</strong>条评论（<strong>' + data.commentshenhe + '</strong>条待审核）')
-    }
-  })
-</script>
+<script src="/js/index.js"></script>
+<script src="/js/common.js"></script>
 </body>
 </html>

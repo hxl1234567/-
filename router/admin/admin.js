@@ -9,11 +9,14 @@ let formidable = require('formidable');
 let Users = require(path.join(__dirname, '../', '../', 'server', 'user'));
 
 let Categories = require(path.join(__dirname, '../', '../', 'server', 'categories'));
+let Slide = require(path.join(__dirname, '../', '../', 'server', 'slide'));
 
 //文章管理
 let Posts = require(path.join(__dirname, '../', '../', 'server', 'post'));
 //评论
-let Comments = require(path.join(__dirname, '../', '../', 'server', 'comment', ''));
+let Comments = require(path.join(__dirname, '../', '../', 'server', 'comment'));
+
+let Settings = require(path.join(__dirname, '../', '../', 'server', 'setting'));
 
 //登录接口,得到一个邮箱密码,返回这个找到的用户对象,否则,返回就返回登录失败
 admin.post('/login', async (req, res) => {
@@ -101,6 +104,12 @@ admin.delete('/users/:id', async (req, res) => {
     res.send(user);
 
 })
+//根据邮箱获取用户的xinxi
+admin.get('/currentUsers', async (req, res) => {
+    let email = req.session.email;
+    let user = await Users.findOne({email: email});
+    res.send(user);
+})
 //修改密码--------------------------------------------
 //修改密码,传递三个值 oldPassword,newPassword0,newPassword1
 admin.post('/passwordReset', async (req, res) => {
@@ -163,7 +172,6 @@ admin.delete('/categories/:id', async (req, res) => {
 admin.post('/posts', async (req, res) => {
     let user = await Users.findOne({email: req.session.email});
     req.body.author = user._id;
-    console.log(req.body)
     let post = await Posts.create(req.body);
     res.send(post);
 })
@@ -194,6 +202,12 @@ admin.get('/posts', async (req, res) => {
 
 //修改文章,得到了id,我们查询出所有的信息,
 //根据文章id值修改文章信息
+//通过文章id获取文章信息
+admin.get('/posts/id', async (req, res) => {
+    let id = req.query.id;
+    let post = await Posts.findOne({_id: id}).populate('author').populate('category');
+    res.send(post);
+})
 admin.put('/posts/:id', async function (req, res) {
     let id = req.params.id;
     let post = await Posts.updateOne({_id: id}, req.body);
@@ -210,7 +224,34 @@ admin.get('/posts/count', async (req, res) => {
     let draftNum = (await Posts.find({state: '0'})).length;
     res.send({postNum: postNum, draftNum: draftNum});
 })
-
+admin.get('/posts/hot', async (req, res) => {
+    let post = await Posts.find().populate('author').populate('category');
+    res.send(post.splice(0, 4));
+})
+//获取最新发布的文章
+admin.get('/posts/lasted', async (req, res) => {
+    let post = await Posts.find().populate('author').populate('category');
+    res.send(post.splice(0, 4));
+})
+//获取随机推荐的文章
+admin.get('/posts/randomRecommond', async (req, res) => {
+    let post = await Posts.find().populate('author').populate('category');
+    res.send(post.splice(0, 5));
+})
+//根据categor._id获取文章集合
+admin.get('/posts/category/:id', async (req, res) => {
+    let posts = await Posts.find({category: req.params.id}).populate('author').populate('category');
+    res.send(posts);
+})
+//根据关键字获取文章列表
+admin.get('/posts/:keys', async (req, res) => {
+    let keys = req.params.keys;
+    let t = "/" + keys + "/";
+    //首先查询所有的文章列表,筛选
+    let post = await Posts.find({content: {$regex: keys}}).populate('author').populate('category');
+    ;
+    res.send(post);
+})
 //评论模块------------------------------------------------------
 //查询评论
 admin.get('/comments', async (req, res) => {
@@ -231,7 +272,6 @@ admin.put('/comments/:id', async (req, res) => {
 admin.delete('/comments/:id', async (req, res) => {
     let id = req.params.id;
     let comment = await Comments.findOneAndDelete({_id: id});
-    console.log(comment);
     res.send('ok');
 })
 //查询评论数量
@@ -239,5 +279,44 @@ admin.get('/comments/count', async (req, res) => {
     let commentNum = (await Comments.find()).length;
     let commentshenhe = (await Comments.find({state: '0'})).length;
     res.send({commentNum: commentNum, commentshenhe: commentshenhe});
+})
+//获取最新评论
+admin.get('/comments/lasted', async (req, res) => {
+    let comment = await Comments.find().populate('author').populate('post');
+    res.send(comment.splice(0, 4));
+})
+//轮播图 ------------------------------------------------------------------
+//提交轮播图
+admin.post('/slides', async (req, res) => {
+    let slide = await Slide.create(req.body);
+    res.send('ok');
+})
+//获取轮播图
+admin.get('/slides', async (req, res) => {
+    let slide = await Slide.find();
+    res.send(slide);
+})
+//删除轮播图
+admin.delete('/slides/:id', async (req, res) => {
+    let slide = await Slide.findOneAndDelete({_id: req.params.id});
+    res.send('ok');
+})
+//设置---------------------------------------------------------------------------
+admin.post('/settings', async (req, res) => {
+    let setting = await Settings.create(req.body);
+    res.send('ok');
+})
+admin.get('/settings', async (req, res) => {
+    let setting = await Settings.find();
+    if (setting.length === 0) {
+        res.send('');
+    }
+    res.send(setting[0]);
+})
+admin.put('/settings/:id', async (req, res) => {
+    let id = req.params.id;
+    let setting0 = await Settings.findOneAndDelete({_id: id});
+    let setting1 = await Settings.create(req.body);
+    res.send('ok');
 })
 module.exports = admin;

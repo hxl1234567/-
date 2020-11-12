@@ -38,7 +38,8 @@ let user = new mongoose.Schema({
         default: Date.now()
     },
     avatar: {
-        type: String
+        type: String,
+        default: null
     },
     password: {
         required: true,

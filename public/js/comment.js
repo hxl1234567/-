@@ -10,7 +10,6 @@ $.ajax({
     type: 'get',
     url: '/admin/comments',
     success: function (data) {
-        console.log(data);
         let html = template('commentTpl', {data: data});
         $('#tbody').html(html);
         let pageHtml = template('pageTpl', {data: data});
